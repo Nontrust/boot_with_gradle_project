@@ -1,0 +1,16 @@
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        dialect=org.hibernate.dialect.MySQL55Dialect
+#    open-in-view: false
+  h2:
+    console:
+      enabled: true
+
+#  mustache:
+#    suffix: mustache
+#    prefix: classpath:/templates
+
+
