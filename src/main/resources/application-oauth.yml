@@ -1,0 +1,11 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 826226269274-a81pir03hqsstacc9te6rq55l5k58ern.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - profile,email # -openid(default) 명시 안한 이유-> openId Provider 구현이 필요하기때문에
+                              # - 하나의 OAuth2Service 로 사용하기위해

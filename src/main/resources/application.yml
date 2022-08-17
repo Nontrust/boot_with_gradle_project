@@ -8,7 +8,10 @@ spring:
   h2:
     console:
       enabled: true
-
+  application-oauth:
+    yml:
+  profiles:
+    include: oauth
 #  mustache:
 #    suffix: mustache
 #    prefix: classpath:/templates

@@ -1,8 +1,7 @@
 package com.clone.deed1515.boot_with_gradle_project.domain.posts;
 
-
-import com.clone.deed1515.boot_with_gradle_project.domain.BaseTimeEntity;
 import lombok.Builder;
+import com.clone.deed1515.boot_with_gradle_project.domain.BaseTimeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
