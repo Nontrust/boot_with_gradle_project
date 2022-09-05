@@ -7,6 +7,7 @@ import com.clone.deed1515.boot_with_gradle_project.web.dto.PostsResponseDto;
 import com.clone.deed1515.boot_with_gradle_project.web.dto.PostsSaveRequestDto;
 import com.clone.deed1515.boot_with_gradle_project.web.dto.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,9 +16,11 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Slf4j
 public class PostsService {
     private  final PostsRepository postsRepository;
     public long save(PostsSaveRequestDto requestDto) {
+        log.debug("requestDto:::{}",requestDto);
         return postsRepository.save(requestDto.toEntity()).getId();
     }
 

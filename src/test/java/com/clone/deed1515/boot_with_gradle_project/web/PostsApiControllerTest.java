@@ -4,18 +4,26 @@ import com.clone.deed1515.boot_with_gradle_project.domain.posts.Posts;
 import com.clone.deed1515.boot_with_gradle_project.domain.posts.PostsRepository;
 import com.clone.deed1515.boot_with_gradle_project.web.dto.PostsSaveRequestDto;
 import com.clone.deed1515.boot_with_gradle_project.web.dto.PostsUpdateRequestDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -35,6 +43,18 @@ public class PostsApiControllerTest {
     private TestRestTemplate restTemplate;
     @Autowired
     private PostsRepository postsRepository;
+    @Autowired
+    private WebApplicationContext context;
+
+    private MockMvc mvc;
+
+    @Before
+    public void setup(){
+        mvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(springSecurity())
+                .build();
+    }
 
     @After
     public void tearDown() throws Exception{
@@ -42,6 +62,7 @@ public class PostsApiControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "USER")
     public void Posts_등록된다() throws Exception{
         //given
         targetUrl = "/api/v1/posts";
@@ -58,9 +79,20 @@ public class PostsApiControllerTest {
         String url = host + port + targetUrl;
 
         //when
+        mvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .contentType(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
+        /*
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
+         */
 
         //then
+        List<Posts> all = postsRepository.findAll();
+        assertThat(all.get(0).getTitle()).isEqualTo(title);
+        assertThat(all.get(0).getContent()).isEqualTo(content);
+
+        /*
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
@@ -68,8 +100,10 @@ public class PostsApiControllerTest {
 
         assertThat(all.get(0).getTitle()).isEqualTo(title);
         assertThat(all.get(0).getContent()).isEqualTo(content);
+         */
     }
     @Test
+    @WithMockUser(roles = "USER")
     public void Posts_수정() throws Exception{
         //given
         targetUrl = "/api/v1/posts";
@@ -95,6 +129,7 @@ public class PostsApiControllerTest {
 
         //when
         ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT,requestEntity,Long.class);
+
 
         //then
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
