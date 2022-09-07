@@ -63,6 +63,7 @@ public class PostsApiControllerTest {
 
     }
 
+
     @Test
     @WithMockUser(roles = "USER")
     public void Posts_등록된다() throws Exception{
@@ -82,8 +83,8 @@ public class PostsApiControllerTest {
 
         //when
         mvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON)
-                .contentType(new ObjectMapper().writeValueAsString(requestDto)))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(new ObjectMapper().writeValueAsString(requestDto)))
                 .andExpect(status().isOk());
         /*
         ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
@@ -130,12 +131,18 @@ public class PostsApiControllerTest {
         HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
         //when
-        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT,requestEntity,Long.class);
+        mvc.perform(put(url)
+                        .contentType(MediaType.APPLICATION_JSON_UTF8)
+                        .content(new ObjectMapper().writeValueAsString(requestDto)))
+                .andExpect(status().isOk());
 
+//        ResponseEntity<Long> responseEntity = restTemplate.exchange(url
+//                , HttpMethod.PUT
+//                , requestEntity,Long.class);
 
         //then
-        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(responseEntity.getBody()).isGreaterThan(0L);
+//        assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
+//        assertThat(responseEntity.getBody()).isGreaterThan(0L);
 
         List<Posts> all= postsRepository.findAll();
         assertThat(all.get(0).getTitle())   .isEqualTo(expectedTitle);

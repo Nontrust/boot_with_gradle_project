@@ -19,7 +19,7 @@ let main = {
         };
 
         $.ajax({
-            type : 'post',
+            type : 'POST',
             url : '/api/v1/posts',
             dataType:'json',
             contentType:'application/json; charset=utf-8',
